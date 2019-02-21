@@ -12,8 +12,6 @@
 
 """
 Handlers
-========
-
 """
 
 from .base import BaseHandler

@@ -13,18 +13,8 @@
 
 """
 LogAlpha
-========
 
-A minimalist yet robust approach to logging in Python.
-LogAlpha handles the rather basic task of filtering, formatting,
-and colorizing metadata alongside messages.
 
-Example
--------
-    >>> import logalpha as logging
-    >>> log = logging.getlogger('example')
-    >>> log.info('test')
-    info 08:47:32 example: test
 """
 
 from .handlers import ConsoleHandler, FileHandler
