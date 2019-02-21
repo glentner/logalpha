@@ -12,8 +12,6 @@
 
 """
 Loggers
-=======
-
 """
 
 from .base import BaseLogger

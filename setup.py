@@ -10,8 +10,7 @@
 # You should have received a copy of the Apache License along with this program.
 # If not, see <https://www.apache.org/licenses/LICENSE-2.0>.
 
-"""
-"""
+"""Build and installation script for LogAlpha."""
 
 # standard libs
 import os
