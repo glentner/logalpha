@@ -56,9 +56,9 @@ class BaseHandler:
         if isinstance(other, str):
             self.__resource = open(other, mode='a')
 
-        elif not all(hasattr(other, attr) for attr in ('__enter__', '__exit__', 'close')):
+        elif not all(hasattr(other, attr) for attr in ('write', 'flush')):
             raise TypeError(f'{self.__class__.__qualname__}.resource is expected to be a '
-                            f'file-like or connection-like object (e.g., has \"__enter__\"), '
+                            f'file-like or connection-like object (e.g., has \"write\"), '
                             f'given, {type(other)}.')
         else:
             self.__resource = other
@@ -165,8 +165,8 @@ class BaseHandler:
 
         # check valid level assignment
         if level.upper() not in LOG_LEVELS:
-            raise ValueError(f'{self.__class__.__qualname__}.level expects one of '
-                             f'{tuple(LOG_LEVELS.keys())}')
+            NAMES = tuple(LOG_LEVELS.keys())
+            raise ValueError(f'{self.__class__.__qualname__}.level expects one of {NAMES}.')
 
         # increment call count
         self.counts[level.upper()] += 1
