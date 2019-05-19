@@ -1,5 +1,3 @@
-# This file is part of the LogAlpha package.
-#
 # This program is free software: you can redistribute it and/or modify it under the
 # terms of the Apache License (v2.0) as published by the Apache Software Foundation.
 #
