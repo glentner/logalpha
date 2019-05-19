@@ -44,8 +44,6 @@ setup(
     long_description = readme_file(),
     classifiers      = ['Development Status :: 5 - Production/Stable',
                         'Topic :: System :: Logging',
-                        'Programming Language :: Python :: 3.5',
-                        'Programming Language :: Python :: 3.6',
                         'Programming Language :: Python :: 3.7',
                         'License :: OSI Approved :: Apache Software License', ],
     entry_points     = {'console_scripts': ['log.debug=logalpha.scripts.log:debug',
