@@ -8,9 +8,10 @@
 # You should have received a copy of the Apache License along with this program.
 # If not, see <https://www.apache.org/licenses/LICENSE-2.0>.
 
+"""ANSI color definitions and management."""
 
 from typing import Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
@@ -24,20 +25,27 @@ ANSI_COLORS = {prefix: {color: '\033[{prefix}{num}m'.format(prefix=i + 3, num=j)
 class Color:
     """
     Associates a `name` (str) with its corresponding `foreground` and `background` (str) 
-    ANSI codes. You can construct a collection of `Color`s with the `from_names` factory method.
-    
-    The `from_names` factory method lets you easily build a collection.
+    ANSI codes. You can construct one or more instances using the factory methods.
 
+    from_name(name: str) -> Color:
+        Returns a Color by looking up its codes in the ANSI_COLORS dictionary.
+
+    from_names(names: Tuple[names]) -> Tuple[Color]:
+        Returns a tuple of Color instances using the singular `from_name` factory.
+    
+    Example:
     >>> colors = Color.from_names(['blue', 'green'])
     >>> colors
-    (Color(name='blue', value='\x1b[34m', reset='\x1b[0m'),
-     Color(name='green', value='\x1b[32m', reset='\x1b[0m'))
+    (Color(name='blue', foreground='\x1b[34m', background='\x1b[44m'),
+     Color(name='green', foreground='\x1b[32m', background='\x1b[42m'))
     """
 
     name: str
     foreground: str
     background: str
-    reset: str = ANSI_RESET
+
+    # the ANSI reset code is an attribute but not a variable
+    reset: str = field(default=ANSI_RESET, init=False, repr=False)
 
     @classmethod
     def from_name(cls, name: str) -> 'Color':
@@ -50,7 +58,6 @@ class Color:
         return tuple(cls.from_name(name) for name in names)
 
 
-# sensible defaults
 COLORS  = Color.from_names(NAMES)
 BLACK   = COLORS[0]
 RED     = COLORS[1]

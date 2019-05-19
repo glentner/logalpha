@@ -9,6 +9,4 @@
 # If not, see <https://www.apache.org/licenses/LICENSE-2.0>.
 
 
-"""
-LogAlpha - an extensible core library for logging in Python.
-"""
+"""LogAlpha - an extensible core library for logging in Python."""

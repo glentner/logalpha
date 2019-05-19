@@ -49,7 +49,7 @@ class Logger:
         """Publish `message` to all `handlers`."""
 
         message = self.Message(level=level, content=content,
-                               **self.callback_values())
+                               **self.evaluate_callbacks())
 
         for handler in self.handlers:
             if message.level >= handler.level:
@@ -59,8 +59,8 @@ class Logger:
         """Short-hand method for `Logger.write`."""
         self.write(*args, **kwargs)
 
-    def callback_values(self) -> Dict[str, Any]:
-        """Evaluate `callbacks`."""
+    def evaluate_callbacks(self) -> Dict[str, Any]:
+        """Evaluates all methods in `callbacks` dictionary."""
         return dict(zip(self.callbacks.keys(),
                         map(lambda method: method(),
                             self.callbacks.values())))

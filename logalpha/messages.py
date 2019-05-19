@@ -8,12 +8,14 @@
 # You should have received a copy of the Apache License along with this program.
 # If not, see <https://www.apache.org/licenses/LICENSE-2.0>.
 
+"""Base Message type."""
 
 from typing import Any
 from datetime import datetime
 from dataclasses import dataclass
 
 from .levels import Level
+
 
 @dataclass
 class Message:
