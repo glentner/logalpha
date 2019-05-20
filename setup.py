@@ -46,9 +46,5 @@ setup(
                         'Topic :: System :: Logging',
                         'Programming Language :: Python :: 3.7',
                         'License :: OSI Approved :: Apache Software License', ],
-    entry_points     = {'console_scripts': ['log.debug=logalpha.scripts.log:debug',
-                                            'log.info=logalpha.scripts.log:info',
-                                            'log.warning=logalpha.scripts.log:warning',
-                                            'log.error=logalpha.scripts.log:error',
-                                            'log.critical=logalpha.scripts.log:critical',]},
+    entry_points     = {'console_scripts': []},
 )
