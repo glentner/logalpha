@@ -11,7 +11,7 @@
 """Meta data for the LogAlpha package."""
 
 __appname__   = 'logalpha'
-__version__   = '2.0.0'
+__version__   = '2.0.1'
 __authors__   = 'Geoffrey Lentner'
 __contact__   = '<glentner@gmail.com>'
 __license__   = 'Apache Software License'
