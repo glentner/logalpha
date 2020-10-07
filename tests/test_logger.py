@@ -45,15 +45,15 @@ def test_level_filter(text: str) -> None:
     log = Logger()
     for i, h_level in enumerate(LEVELS):
 
-        resource = StringIO()
+        buffer = StringIO()
         log.handlers.clear()
-        log.handlers.append(InMemoryHandler(level=h_level, resource=resource))
+        log.handlers.append(InMemoryHandler(level=h_level, resource=buffer))
 
         for m_level in LEVELS:
             getattr(log, m_level.name.lower())(text)  # i.e., `log.debug('...')`
 
         expected = '\n'.join([f'{i_level.name}: {text}' for i_level in LEVELS[i:]])
-        assert resource.getvalue().strip() == expected.strip()
+        assert buffer.getvalue().strip() == expected.strip()
 
 
 @dataclass
@@ -72,7 +72,7 @@ class NamedLogger(Logger):
     def __init__(self, topic: str) -> None:
         """Assign callback to include `topic`."""
         super().__init__()
-        self.callbacks['topic'] = lambda: topic
+        self.callbacks = {'topic': (lambda: topic)}
 
 
 @dataclass
@@ -90,8 +90,9 @@ def test_named_logger(topic: str, handler_level: int, message_level: int) -> Non
     """Test a derived logger with a named topic."""
     assume(handler_level <= message_level)  # NOTE: the message will not be filtered
     log = NamedLogger(topic)
-    resource = StringIO()
-    handler = DetailedHandler(level=LEVELS[handler_level], resource=resource)
+    buffer = StringIO()
+    handler = DetailedHandler(level=LEVELS[handler_level], resource=buffer)
+    log.handlers.clear()
     log.handlers.append(handler)
     getattr(log, LEVELS[message_level].name.lower())('message')
-    assert resource.getvalue().strip() == f'{LEVELS[message_level].name} [{topic}] message'
+    assert buffer.getvalue().strip() == f'{LEVELS[message_level].name} [{topic}] message'
