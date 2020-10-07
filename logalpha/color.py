@@ -10,34 +10,41 @@
 
 """ANSI color definitions and management."""
 
-from typing import Tuple
+# type annotations
+from __future__ import annotations
+from typing import List, Dict
+
+# standard libs
 from dataclasses import dataclass, field
 
 
-NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
-
-ANSI_RESET = '\033[0m'
-ANSI_COLORS = {prefix: {color: '\033[{prefix}{num}m'.format(prefix=i + 3, num=j) for j, color in enumerate(NAMES)}
-               for i, prefix in enumerate(['foreground', 'background'])}
+# names of supported colors to map to ANSI codes
+NAMES: List = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
+ANSI_RESET: str = '\033[0m'
+ANSI_COLORS: Dict[str, Dict[str, str]] = {
+    prefix: {color: '\033[{prefix}{num}m'.format(prefix=i + 3, num=j) for j, color in enumerate(NAMES)}
+    for i, prefix in enumerate(['foreground', 'background'])
+}
 
 
 @dataclass
 class Color:
     """
-    Associates a `name` (str) with its corresponding `foreground` and `background` (str) 
-    ANSI codes. You can construct one or more instances using the factory methods.
+    Associates a name (str) with its corresponding foreground and background (str)
+    ANSI codes. Construct one or more instances using the factory methods.
 
-    from_name(name: str) -> Color:
-        Returns a Color by looking up its codes in the ANSI_COLORS dictionary.
+    Methods:
+        from_name(name: str) -> Color:
+            Returns a Color by looking up its codes in the ANSI_COLORS dictionary.
 
-    from_names(names: Tuple[names]) -> Tuple[Color]:
-        Returns a tuple of Color instances using the singular `from_name` factory.
-    
+        from_names(names: List[str]) -> List[Color]:
+            Returns a tuple of Color instances using the singular `from_name` factory.
+
     Example:
-    >>> colors = Color.from_names(['blue', 'green'])
-    >>> colors
-    (Color(name='blue', foreground='\x1b[34m', background='\x1b[44m'),
-     Color(name='green', foreground='\x1b[32m', background='\x1b[42m'))
+        >>> colors = Color.from_names(['blue', 'green'])
+        >>> colors
+        [Color(name='blue', foreground='\x1b[34m', background='\x1b[44m'),
+         Color(name='green', foreground='\x1b[32m', background='\x1b[42m')]
     """
 
     name: str
@@ -53,11 +60,12 @@ class Color:
         return cls(name, ANSI_COLORS['foreground'][name], ANSI_COLORS['background'][name])
 
     @classmethod
-    def from_names(cls, names: Tuple[str]) -> Tuple['Color']:
+    def from_names(cls, names: List[str]) -> List[Color]:
         """Create collection of colors by `name`."""
-        return tuple(cls.from_name(name) for name in names)
+        return [cls.from_name(name) for name in names]
 
 
+# global named instances of colors
 COLORS  = Color.from_names(NAMES)
 BLACK   = COLORS[0]
 RED     = COLORS[1]

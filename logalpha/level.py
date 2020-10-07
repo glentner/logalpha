@@ -10,40 +10,45 @@
 
 """Level implementations."""
 
-from typing import Tuple, Tuple
+# type annotations
+from __future__ import annotations
+from typing import List
+
+# standard libs
 from dataclasses import dataclass
 
 
 @dataclass
 class Level:
     """
-    Associates a `name` (str) and a numeric `value` (int).
-    You can construct a collection of `Level`s with the `from_names` factory method.
+    Associates a name (str) and a value (int).
+    Construct a collection of Levels with the `from_names` factory method.
 
-    >>> levels = Level.from_names(['DEBUG', 'INFO'])
-    >>> levels
-    (Level(name='DEBUG', value=0),
-     Level(name='INFO', value=1))
+    Example:
+        >>> levels = Level.from_names(['Ok', 'Err'])
+        >>> levels
+        [Level(name='Ok', value=0),
+         Level(name='Err', value=1)]
     """
 
     name: str
     value: int
 
-    def __lt__(self, other: 'Level') -> bool:
+    def __lt__(self, other: Level) -> bool:
         """Compares `.value`."""
         return self.value < other.value
 
-    def __ge__(self, other: 'Level') -> bool:
+    def __ge__(self, other: Level) -> bool:
         """Compares `.value`."""
         return self.value >= other.value
 
     @classmethod
-    def from_names(cls, names: Tuple[str]) -> Tuple['Level']:
+    def from_names(cls, names: List[str]) -> List[Level]:
         """Construct a set of Level objects."""
-        return tuple(cls(name, value) for value, name in enumerate(names))
+        return [cls(name, value) for value, name in enumerate(names)]
 
 
-# sensible defaults
+# sensible (canonical) defaults
 LEVELS   = Level.from_names(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
 DEBUG    = LEVELS[0]
 INFO     = LEVELS[1]

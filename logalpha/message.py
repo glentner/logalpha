@@ -10,20 +10,22 @@
 
 """Base Message type."""
 
+# type annotations
+from __future__ import annotations
 from typing import Any
-from datetime import datetime
+
+# standard libs
 from dataclasses import dataclass
 
-from .levels import Level
+# internal libs
+from .level import Level
 
 
 @dataclass
 class Message:
     """
-    Associates a `level` with `content`. Derived classes should add new fields. 
+    Associates a level with content. Derived classes should add new fields.
     The `Logger` should define callbacks to populate these new fields.
     """
-
     level: Level
     content: Any
-

@@ -10,21 +10,25 @@
 
 """Handler implementations."""
 
-import io
+# type annotations
+from __future__ import annotations
+from typing import Any, IO
+
+# standard libs
 import sys
 from dataclasses import dataclass
-from multiprocessing import Queue
-from typing import Any
 
-from .levels import Level
-from .messages import Message
+
+# internal libs
+from .level import Level
+from .message import Message
 
 
 @dataclass
 class Handler:
     """
     Core message handling interface.
-    A Handler associates a logging level with a resource.
+    A Handler associates a level with a resource.
     """
 
     level: Level
@@ -40,42 +44,8 @@ class Handler:
 
 
 @dataclass
-class FileHandler(Handler):
-    """A `Handler` whose resource is file-like."""
-
-    level: Level
-    resource: io.TextIOWrapper
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Initialize the file `resource`. Arguments passed to open(...)."""
-        self.resource = open(*args, **kwargs)
-    
-    def __enter__(self) -> 'FileHandler':
-        return self
-    
-    def __exit__(self, *exc) -> None:
-        """Releases the file `resource`."""
-        self.resource.close()
-    
-    def __del__(self) -> None:
-        """Releases the file `resource`."""
-        self.resource.close()
-
-
-@dataclass
-class ConsoleHandler(FileHandler):
+class StreamHandler(Handler):
     """A `Handler` whose resource is `sys.stderr`."""
 
     level: Level
-    resource: io.TextIOWrapper = sys.stderr
-
-
-@dataclass
-class QueueHandler(Handler):
-    """Calls `.put` on the member queue `resource`."""
-
-    level: Level
-    resource: Queue
-
-    def write(self, message: Message) -> None:
-        self.resource.put(message)
+    resource: IO = sys.stderr
