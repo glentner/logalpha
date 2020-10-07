@@ -12,7 +12,7 @@
 """Standard logging setup."""
 
 # type annotations
-from typing import Dict, Type
+from typing import Type, Callable
 
 # standard libs
 from datetime import datetime
@@ -23,7 +23,7 @@ from socket import gethostname
 from logalpha.level import Level
 from logalpha.message import Message
 from logalpha.handler import StreamHandler
-from logalpha.logger import Logger, CallbackMethod
+from logalpha.logger import Logger
 
 
 @dataclass
@@ -56,15 +56,19 @@ class StandardLogger(Logger):
     """Logger with StandardMessage and StandardHandler."""
 
     Message: Type[Message] = StandardMessage
-    callbacks: Dict[str, CallbackMethod] = {
-        'timestamp': datetime.now,
-        'host': (lambda: HOST)
-    }
-
     topic: str = None
+
+    # stubs for instrumented level methods
+    debug: Callable[[str], None]
+    info: Callable[[str], None]
+    warning: Callable[[str], None]
+    error: Callable[[str], None]
+    critical: Callable[[str], None]
 
     def __init__(self, topic: str) -> None:
         """Initialize with `topic`."""
         super().__init__()
         self.topic = topic
-        self.callbacks['topic'] = (lambda: topic)
+        self.callbacks = {'timestamp': datetime.now,
+                          'host': (lambda: HOST),
+                          'topic': (lambda: topic)}

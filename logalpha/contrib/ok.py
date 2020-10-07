@@ -13,6 +13,7 @@
 
 # type annotations
 from __future__ import annotations
+from typing import Callable
 
 # standard libs
 from dataclasses import dataclass
@@ -50,12 +51,6 @@ class OkayLogger(Logger):
     levels = LEVELS
     colors = COLORS
 
-    @classmethod
-    def with_level(cls, level: Level) -> OkayLogger:
-        """Setup a handler and register it with a new logger."""
-        if level in [OK, ERR]:
-            log = cls()
-            log.handlers.append(OkayHandler(level=level))
-            return log
-        else:
-            raise ValueError(f'level should be one of {LEVELS}')
+    # stubs for instrumented level methods
+    ok: Callable[[str], None]
+    err: Callable[[str], None]
