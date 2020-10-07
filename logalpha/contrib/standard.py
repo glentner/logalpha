@@ -56,7 +56,7 @@ class StandardLogger(Logger):
     """Logger with StandardMessage and StandardHandler."""
 
     Message: Type[Message] = StandardMessage
-    topic: str = None
+    topic: str
 
     # stubs for instrumented level methods
     debug: Callable[[str], None]
