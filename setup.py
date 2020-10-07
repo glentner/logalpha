@@ -17,7 +17,7 @@ import os
 from setuptools import setup, find_packages
 
 # internal libs
-from logalpha.__meta__ import (__appname__,
+from logalpha.__meta__ import (__pkgname__,
                                __version__,
                                __authors__,
                                __contact__,
@@ -25,14 +25,21 @@ from logalpha.__meta__ import (__appname__,
                                __description__)
 
 
-def readme_file():
-    """Use README.md as long_description."""
-    with open(os.path.join(os.path.dirname(__file__), "README.md"), 'r') as readme:
-        return readme.read()
+with open('README.rst', mode='r') as readme:
+    long_description = readme.read()
+
+
+# no real dependencies
+DEPS = []
+
+
+# add dependencies for readthedocs.io
+if os.environ.get('READTHEDOCS') == 'True':
+    DEPS.extend(['sphinxbootstrap4theme'])
 
 
 setup(
-    name             = __appname__,
+    name             = __pkgname__,
     version          = __version__,
     author           = __authors__,
     author_email     = __contact__,
@@ -41,10 +48,13 @@ setup(
     keywords         = 'python minimalist logging package',
     url              = 'https://logalpha.readthedocs.io',
     packages         = find_packages(),
-    long_description = readme_file(),
+    long_description = long_description,
+    long_description_content_type='text/x-rst',
     classifiers      = ['Development Status :: 5 - Production/Stable',
                         'Topic :: System :: Logging',
                         'Programming Language :: Python :: 3.7',
+                        'Programming Language :: Python :: 3.8',
+                        'Programming Language :: Python :: 3.9',
                         'License :: OSI Approved :: Apache Software License', ],
     entry_points     = {'console_scripts': []},
 )
