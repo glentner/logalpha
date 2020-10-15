@@ -10,6 +10,7 @@
 
 """Level implementations."""
 
+
 # type annotations
 from __future__ import annotations
 from typing import List
@@ -21,37 +22,58 @@ from dataclasses import dataclass
 @dataclass
 class Level:
     """
-    Associates a name (str) and a value (int).
-    Construct a collection of Levels with the `from_names` factory method.
+    A level associates a name and a value.
 
     Example:
-        >>> levels = Level.from_names(['Ok', 'Err'])
-        >>> levels
-        [Level(name='Ok', value=0),
-         Level(name='Err', value=1)]
+        >>> level = Level(name='INFO', value=1)
+        >>> level
+        Level(name='INFO', value=1)
     """
 
     name: str
     value: int
 
     def __lt__(self, other: Level) -> bool:
-        """Compares `.value`."""
+        """
+        Returns ``self.value < other.value``.
+
+        Example:
+            >>> a, b = Level.from_names(['A', 'B'])
+            >>> assert a < b
+            >>> assert b > a
+        """
         return self.value < other.value
 
+    def __gt__(self, other: Level) -> bool:
+        """Similar to :meth:`Level.__lt__`."""
+        return self.value > other.value
+
+    def __le__(self, other: Level) -> bool:
+        """Similar to :meth:`Level.__lt__`."""
+        return self.value <= other.value
+
     def __ge__(self, other: Level) -> bool:
-        """Compares `.value`."""
+        """Similar to :meth:`Level.__lt__`."""
         return self.value >= other.value
 
     @classmethod
     def from_names(cls, names: List[str]) -> List[Level]:
-        """Construct a set of Level objects."""
+        """
+        Construct a set of contiguous Levels.
+
+        Example:
+            >>> levels = Level.from_names(['Ok', 'Err'])
+            >>> levels
+            [Level(name='Ok', value=0),
+             Level(name='Err', value=1)]
+        """
         return [cls(name, value) for value, name in enumerate(names)]
 
 
-# sensible (canonical) defaults
-LEVELS   = Level.from_names(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
-DEBUG    = LEVELS[0]
-INFO     = LEVELS[1]
-WARNING  = LEVELS[2]
-ERROR    = LEVELS[3]
-CRITICAL = LEVELS[4]
+# List of canonical logging levels
+LEVELS   = Level.from_names(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])  #:
+DEBUG    = LEVELS[0]  #:
+INFO     = LEVELS[1]  #:
+WARNING  = LEVELS[2]  #:
+ERROR    = LEVELS[3]  #:
+CRITICAL = LEVELS[4]  #:

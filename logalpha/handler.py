@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 
 # internal libs
-from .level import Level
+from .level import Level, WARNING
 from .message import Message
 
 
@@ -28,7 +28,13 @@ from .message import Message
 class Handler:
     """
     Core message handling interface.
-    A Handler associates a level with a resource.
+    A Handler associates a `level` with a `resource`.
+
+    Attributes:
+        level (:class:`~logalpha.level.Level`):
+            The level for this handler.
+        resource (:class:`Any`):
+            Some resource to publish messages to.
     """
 
     level: Level
@@ -36,16 +42,32 @@ class Handler:
 
     def write(self, message: Message) -> None:
         """Publish `message` to `resource` after calling `format`."""
-        print(self.format(message), file=self.resource, flush=True)
+        raise NotImplementedError()
 
     def format(self, message: Message) -> Any:
-        """Format `message` into necessary output.`"""
-        return message.content
+        """Format `message`."""
+        raise NotImplementedError()
 
 
 @dataclass
 class StreamHandler(Handler):
-    """A `Handler` whose resource is `sys.stderr`."""
+    """
+    Publish messages to a file-like resource.
 
-    level: Level
+    Attributes:
+        level (:class:`~logalpha.level.Level`):
+            The level for this handler (default: :data:`WARNING`).
+        resource (`IO`):
+            File-like resource to write to (default: :data:`sys.stderr`).
+    """
+
+    level: Level = WARNING
     resource: IO = sys.stderr
+
+    def write(self, message: Message) -> None:
+        """Publish `message` to `resource` after calling `format`."""
+        print(self.format(message), file=self.resource, flush=True)
+
+    def format(self, message: Message) -> str:
+        """Returns :data:`message.content`."""
+        return message.content

@@ -18,14 +18,28 @@ from typing import Any
 from dataclasses import dataclass
 
 # internal libs
-from .level import Level
+from .level import Level, INFO
 
 
 @dataclass
 class Message:
     """
     Associates a level with content. Derived classes should add new fields.
-    The `Logger` should define callbacks to populate these new fields.
+    The :class:`~logalpha.logger.Logger` should define `callbacks` to populate
+    these new fields.
+
+    Example:
+        >>> msg = Message(level=INFO, content='Hello, world!')
+        Message(level=Level(name='INFO', value=1), content='Hello, world!')
+
+    See Also:
+        :class:`logalpha.logger.Logger`
+
+    .. note::
+
+        It is not intended that you directly instantiate a message. Messages
+        are automatically constructed by the :class:`~logalpha.logger.Logger`
+        when calling one of the instrumented level methods.
     """
     level: Level
     content: Any

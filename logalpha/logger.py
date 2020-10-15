@@ -21,7 +21,7 @@ import functools
 # internal libs
 from .level import Level, DEBUG, INFO, WARNING, ERROR, CRITICAL
 from .color import Color, BLUE, GREEN, YELLOW, RED, MAGENTA
-from .handler import Handler
+from .handler import Handler, StreamHandler
 from .message import Message
 
 
@@ -32,6 +32,17 @@ CallbackMethod = Callable[[], Any]
 class Logger:
     """
     Base logging interface.
+
+    By default the `levels` and `colors` are the conventional set.
+    Append any number of appropriate handlers.
+
+    Example:
+        >>> log = Logger()
+        >>> log.warning('foo')
+
+        >>> Logger.handlers.append(StreamHandler())
+        >>> log.warning('bar')
+        bar
     """
 
     # default configuration
@@ -44,12 +55,16 @@ class Logger:
     # redefine to construct with callbacks
     Message: Type[Message] = Message
 
-    def __init__(self) -> None:
-        """Setup instance; define level methods."""
-        self._instrument_level_methods()
-
     def write(self, level: Level, content: Any) -> None:
-        """Publish `message` to all `handlers`."""
+        """
+        Publish `message` to all `handlers` if its `level` is sufficient for that handler.
+
+        .. note::
+
+            It's expected that the logger will be called with one of the dynamically
+            instrumented level methods (e.g., :meth:`info`), and not call the
+            :meth:`write` method directly.
+        """
         message = self.Message(level=level, content=content, **self._evaluate_callbacks())  # noqa: args
         for handler in self.handlers:
             if message.level >= handler.level:
@@ -59,9 +74,16 @@ class Logger:
         """Evaluates all methods in `callbacks` dictionary."""
         return dict(zip(self.callbacks.keys(), map(lambda method: method(), self.callbacks.values())))
 
-    def _instrument_level_methods(self) -> None:
-        """Create member functions for all levels."""
-        for level in self.levels:
-            method = functools.partial(self.write, level)
-            method.__doc__ = f'Alias to {self.__class__.__name__}.write(level={level}, content=...)'
-            setattr(self, level.name.lower(), method)
+    @property
+    @functools.lru_cache(maxsize=None)
+    def _level_map(self) -> Dict[str, Level]:
+        """Map lower-case level names to level instances."""
+        return {level.name.lower(): level for level in self.levels}
+
+    @functools.lru_cache(maxsize=None)
+    def __getattr__(self, name: str) -> Any:
+        """Automatically forward calls to level `name`."""
+        try:
+            return functools.partial(self.write, self._level_map[name])
+        except KeyError as error:
+            raise AttributeError(f'\'{self.__class__.__name__}\' object has no attribute \'{name}\'') from error
