@@ -12,18 +12,19 @@
 """Standard logging setup."""
 
 # type annotations
-from typing import Type, Callable
+from typing import Type, Callable, IO
 
 # standard libs
+import sys
 from datetime import datetime
 from dataclasses import dataclass
 from socket import gethostname
 
 # internal libs
-from logalpha.level import Level
-from logalpha.message import Message
-from logalpha.handler import StreamHandler
-from logalpha.logger import Logger
+from ..level import Level, WARNING
+from ..message import Message
+from ..handler import StreamHandler
+from ..logger import Logger
 
 
 @dataclass
@@ -36,11 +37,21 @@ class StandardMessage(Message):
     host: str
 
 
+@dataclass
 class StandardHandler(StreamHandler):
     """
     A standard message handler writes to <stderr> by default.
     Message format includes all attributes.
+
+    Attributes:
+        level (:class:`~logalpha.level.Level`):
+            The level for this handler.
+        resource (:class:`Any`):
+            Some resource to publish messages to.
     """
+
+    level: Level = WARNING
+    resource: IO = sys.stderr
 
     def format(self, message: StandardMessage) -> str:
         """Format the message."""
@@ -53,17 +64,10 @@ HOST: str = gethostname()
 
 
 class StandardLogger(Logger):
-    """Logger with StandardMessage and StandardHandler."""
+    """Logger with :class:`StandardMessage`."""
 
     Message: Type[Message] = StandardMessage
     topic: str
-
-    # stubs for instrumented level methods
-    debug: Callable[[str], None]
-    info: Callable[[str], None]
-    warning: Callable[[str], None]
-    error: Callable[[str], None]
-    critical: Callable[[str], None]
 
     def __init__(self, topic: str) -> None:
         """Initialize with `topic`."""
@@ -72,3 +76,10 @@ class StandardLogger(Logger):
         self.callbacks = {'timestamp': datetime.now,
                           'host': (lambda: HOST),
                           'topic': (lambda: topic)}
+
+
+DEBUG = Logger.levels[0]  #:
+INFO = Logger.levels[1]  #:
+WARNING = Logger.levels[2]  #:
+ERROR = Logger.levels[3]  #:
+CRITICAL = Logger.levels[4]  #:

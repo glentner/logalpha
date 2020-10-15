@@ -12,45 +12,59 @@
 """Simple colorized Ok/Err logging setup."""
 
 # type annotations
-from __future__ import annotations
-from typing import Callable
+from typing import List, IO, Callable
 
 # standard libs
+import sys
 from dataclasses import dataclass
 
 # internal libs
-from logalpha.color import Color, ANSI_RESET
-from logalpha.level import Level
-from logalpha.message import Message
-from logalpha.handler import StreamHandler
-from logalpha.logger import Logger
+from ..color import Color, ANSI_RESET
+from ..level import Level
+from ..message import Message
+from ..handler import StreamHandler
+from ..logger import Logger
 
 
-LEVELS = Level.from_names(['Ok', 'Err'])
-COLORS = Color.from_names(['green', 'red'])
-OK = LEVELS[0]
-ERR = LEVELS[1]
+class OkayLogger(Logger):
+    """
+    Logger with Ok/Err levels.
+
+    Example:
+        >>> log = OkayLogger()
+        >>> log.ok('foo')
+
+        >>> Logger.handlers.append(OkayHandler())
+        >>> log.ok('bar')
+        Ok  bar
+    """
+
+    levels: List[Level] = Level.from_names(['Ok', 'Err'])
+    colors: List[Color] = Color.from_names(['green', 'red'])
+
+
+# global named levels
+OK = OkayLogger.levels[0]  #:
+ERR = OkayLogger.levels[1]  #:
 
 
 @dataclass
 class OkayHandler(StreamHandler):
     """
-    A standard message handler writes to <stderr> by default.
-    Message format includes the level and the text.
+    Writes to <stderr> by default.
+    Message format includes the colorized level and the text.
+
+    Attributes:
+        level (:class:`~logalpha.level.Level`):
+            The level for this handler (default: :data:`OK`).
+        resource (`IO`):
+            File-like resource to write to (default: :data:`sys.stderr`).
     """
+
+    level: Level = OK
+    resource: IO = sys.stderr
 
     def format(self, message: Message) -> str:
         """Format the message."""
-        color = COLORS[message.level.value].foreground
+        color = OkayLogger.colors[message.level.value].foreground
         return f'{color}{message.level.name:<3}{ANSI_RESET} {message.content}'
-
-
-class OkayLogger(Logger):
-    """Logger with StandardMessage and StandardHandler."""
-
-    levels = LEVELS
-    colors = COLORS
-
-    # stubs for instrumented level methods
-    ok: Callable[[str], None]
-    err: Callable[[str], None]
