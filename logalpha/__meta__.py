@@ -10,10 +10,10 @@
 
 """Meta data for the LogAlpha package."""
 
-__appname__   = 'logalpha'
-__version__   = '2.0.2'
+__pkgname__   = 'logalpha'
+__version__   = '3.0.0'
 __authors__   = 'Geoffrey Lentner'
-__contact__   = '<glentner@gmail.com>'
+__contact__   = '<glentner@purdue.edu>'
 __license__   = 'Apache Software License'
 __copyright__ = 'Copyright (c) Geoffrey Lentner 2018. All Rights Reserved.'
-__description__ = 'An extensible core library for logging in Python.'
+__description__ = 'A minimal framework for logging in Python.'

@@ -8,4 +8,23 @@
 # You should have received a copy of the Apache License along with this program.
 # If not, see <https://www.apache.org/licenses/LICENSE-2.0>.
 
-"""Command line scripts provided by LogAlpha."""
+"""Message unit tests."""
+
+# standard libs
+from string import ascii_letters
+
+# internal libs
+from logalpha.message import Message
+from logalpha.level import LEVELS
+
+# external libs
+from hypothesis import given, strategies as st
+
+
+@given(content=st.text(ascii_letters))
+def test_init(content: str) -> None:
+    """Check initialization."""
+    for level in LEVELS:
+        message = Message(level=level, content=content)
+        assert message.level is level
+        assert message.content is content
