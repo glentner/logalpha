@@ -35,7 +35,7 @@ DEPS = []
 
 # add dependencies for readthedocs.io
 if os.environ.get('READTHEDOCS') == 'True':
-    DEPS.extend(['pydata_sphinx_theme'])
+    DEPS.extend(['pydata-sphinx-theme'])
 
 
 setup(
@@ -56,5 +56,6 @@ setup(
                         'Programming Language :: Python :: 3.8',
                         'Programming Language :: Python :: 3.9',
                         'License :: OSI Approved :: Apache Software License', ],
+    install_requires = DEPS,
     entry_points     = {'console_scripts': []},
 )
