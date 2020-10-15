@@ -35,7 +35,7 @@ DEPS = []
 
 # add dependencies for readthedocs.io
 if os.environ.get('READTHEDOCS') == 'True':
-    DEPS.extend(['sphinxbootstrap4theme'])
+    DEPS.extend(['pydata_sphinx_theme'])
 
 
 setup(
@@ -45,7 +45,7 @@ setup(
     author_email     = __contact__,
     description      = __description__,
     license          = __license__,
-    keywords         = 'python minimalist logging package',
+    keywords         = 'python minimalist logging framework',
     url              = 'https://logalpha.readthedocs.io',
     packages         = find_packages(),
     long_description = long_description,
