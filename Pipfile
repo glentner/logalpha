@@ -8,11 +8,12 @@ pytest = ">=6.1.0"
 pytest-cov = ">=2.10.1"
 hypothesis = ">=5.36.1"
 pylint = ">=2.6.0"
-sphinx = ">=3.2.1"
-ipython = ">=7.18.1"
 mypy = ">=0.782"
+ipython = ">=7.18.1"
+sphinx = ">=3.2.1"
 pydata-sphinx-theme = ">=0.4.1"
 sphinx-autobuild = ">=2020.9.1"
+twine = ">=3.2.0"
 
 [packages]
 logalpha = {editable = true,path = "."}
