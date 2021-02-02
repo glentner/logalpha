@@ -16,7 +16,7 @@ sphinx-autobuild = ">=2020.9.1"
 twine = ">=3.2.0"
 
 [packages]
-logalpha = {editable = true,path = "."}
+logalpha = {editable = true, path = "."}
 
 [requires]
-python_version = "3.8.5"
+python_version = "3.8"
